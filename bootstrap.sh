@@ -173,7 +173,9 @@ find_codium_bin() {
     for candidate in \
         "${HOMEBREW_PREFIX:-}/bin/codium" \
         "/Applications/VSCodium.app/Contents/Resources/app/bin/codium" \
-        "${HOME}/Applications/VSCodium.app/Contents/Resources/app/bin/codium"; do
+        "${HOME}/Applications/VSCodium.app/Contents/Resources/app/bin/codium" \
+        "${HOMEBREW_PREFIX:-/opt/homebrew}/Caskroom/vscodium"/*/VSCodium.app/Contents/Resources/app/bin/codium \
+        "/opt/homebrew/Caskroom/vscodium"/*/VSCodium.app/Contents/Resources/app/bin/codium; do
         [ -n "$candidate" ] || continue
         [ -x "$candidate" ] || continue
         printf '%s\n' "$candidate"
@@ -201,6 +203,8 @@ install_vscodium_extensions() {
         warn "skip codium extensions: codium executable not found"
         return
     fi
+
+    log "ok   codium ${codium_bin}"
 
     while read -r ext; do
         [ -n "$ext" ] || continue
