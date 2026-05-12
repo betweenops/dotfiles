@@ -6,6 +6,7 @@ Personal macOS arm64 developer workstation setup focused on terminal productivit
 
 - WezTerm
 - Bash configuration
+- Vim configuration
 - Starship prompt
 - Homebrew bundle support
 - VSCodium settings/extensions
@@ -22,6 +23,7 @@ The bootstrap script is the supported entrypoint for a clean macOS arm64 setup. 
 - installs Homebrew if it is missing
 - runs `brew bundle --file ~/dotfiles/Brewfile`
 - installs and verifies `WezTerm`, `VSCodium`, and `CaskaydiaCove Nerd Font`
+- installs supporting CLI tools including `vim`
 - verifies the `/opt/homebrew` paths this repo expects
 - backs up existing files into `~/.dotfiles-backups/<timestamp>/`
 - symlinks the tracked dotfiles into place

@@ -175,6 +175,7 @@ verify_expected_installs() {
         fzf \
         ripgrep \
         starship \
+        vim \
         zoxide; do
         verify_formula "$formula"
     done
@@ -320,6 +321,7 @@ main() {
     backup_and_link "${REPO_ROOT}/.wezterm.lua" "${HOME}/.wezterm.lua"
     backup_and_link "${REPO_ROOT}/.bash_profile" "${HOME}/.bash_profile"
     backup_and_link "${REPO_ROOT}/.bashrc" "${HOME}/.bashrc"
+    backup_and_link "${REPO_ROOT}/.vimrc" "${HOME}/.vimrc"
     backup_and_link "${REPO_ROOT}/.config/starship.toml" "${HOME}/.config/starship.toml"
     backup_and_link \
         "${REPO_ROOT}/vscodium/User/settings.json" \

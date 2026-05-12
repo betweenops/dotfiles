@@ -8,6 +8,7 @@ brew "eza"
 brew "fzf"
 brew "ripgrep"
 brew "starship"
+brew "vim"
 brew "zoxide"
 
 cask "vscodium"
