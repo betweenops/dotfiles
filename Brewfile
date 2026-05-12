@@ -1,6 +1,3 @@
-tap "homebrew/bundle"
-tap "homebrew/cask-fonts"
-
 brew "bash"
 brew "bash-completion@2"
 brew "coreutils"
