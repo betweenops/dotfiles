@@ -223,6 +223,18 @@ backup_and_link() {
     log "link ${dest} -> ${src}"
 }
 
+backup_and_link_if_present() {
+    local src="$1"
+    local dest="$2"
+
+    if [ ! -e "$src" ]; then
+        warn "skip missing optional config: ${src}"
+        return
+    fi
+
+    backup_and_link "$src" "$dest"
+}
+
 find_codium_bin() {
     local candidate
     local vscodium_app
@@ -321,7 +333,7 @@ main() {
     backup_and_link "${REPO_ROOT}/.wezterm.lua" "${HOME}/.wezterm.lua"
     backup_and_link "${REPO_ROOT}/.bash_profile" "${HOME}/.bash_profile"
     backup_and_link "${REPO_ROOT}/.bashrc" "${HOME}/.bashrc"
-    backup_and_link "${REPO_ROOT}/.vimrc" "${HOME}/.vimrc"
+    backup_and_link_if_present "${REPO_ROOT}/.vimrc" "${HOME}/.vimrc"
     backup_and_link "${REPO_ROOT}/.config/starship.toml" "${HOME}/.config/starship.toml"
     backup_and_link \
         "${REPO_ROOT}/vscodium/User/settings.json" \
