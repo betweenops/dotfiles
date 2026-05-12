@@ -1,0 +1,16 @@
+tap "homebrew/bundle"
+
+brew "bash"
+brew "bash-completion@2"
+brew "coreutils"
+brew "gnu-sed"
+brew "atuin"
+brew "direnv"
+brew "eza"
+brew "fzf"
+brew "ripgrep"
+brew "starship"
+brew "zoxide"
+
+cask "vscodium"
+cask "wezterm"

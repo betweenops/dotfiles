@@ -1,0 +1,3 @@
+hashicorp.hcl
+openai.chatgpt
+samuelcolvin.jinjahtml
