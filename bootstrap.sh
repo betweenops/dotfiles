@@ -10,6 +10,9 @@ INSTALL_HOMEBREW=1
 RUN_BUNDLE=1
 INSTALL_EXTENSIONS=1
 
+APP_DIR_SYSTEM="/Applications"
+APP_DIR_USER="${HOME}/Applications"
+
 usage() {
     cat <<'EOF'
 Usage: bootstrap.sh [options]
@@ -108,6 +111,55 @@ verify_cask() {
     brew list --cask "$name" >/dev/null 2>&1 || die "Missing Homebrew cask: ${name}"
 }
 
+preferred_app_dir() {
+    if [ -w "$APP_DIR_SYSTEM" ]; then
+        printf '%s\n' "$APP_DIR_SYSTEM"
+        return 0
+    fi
+
+    mkdir -p "$APP_DIR_USER"
+    printf '%s\n' "$APP_DIR_USER"
+}
+
+app_bundle_path() {
+    local app_name="$1"
+
+    if [ -d "${APP_DIR_SYSTEM}/${app_name}" ]; then
+        printf '%s\n' "${APP_DIR_SYSTEM}/${app_name}"
+        return 0
+    fi
+
+    if [ -d "${APP_DIR_USER}/${app_name}" ]; then
+        printf '%s\n' "${APP_DIR_USER}/${app_name}"
+        return 0
+    fi
+
+    return 1
+}
+
+ensure_cask_app() {
+    local cask_name="$1"
+    local app_name="$2"
+    local target_app_dir
+    local bundle_path
+
+    if bundle_path="$(app_bundle_path "$app_name")"; then
+        log "ok   ${app_name} ${bundle_path}"
+        return 0
+    fi
+
+    target_app_dir="$(preferred_app_dir)"
+    log "repair ${cask_name} -> ${target_app_dir}"
+    brew reinstall --cask --force --appdir="$target_app_dir" "$cask_name"
+
+    if bundle_path="$(app_bundle_path "$app_name")"; then
+        log "ok   ${app_name} ${bundle_path}"
+        return 0
+    fi
+
+    die "Expected ${app_name} in ${APP_DIR_SYSTEM} or ${APP_DIR_USER} after installing ${cask_name}."
+}
+
 verify_expected_installs() {
     local formula
     local cask
@@ -136,6 +188,9 @@ verify_expected_installs() {
 
     [ -x /opt/homebrew/bin/bash ] || die "Expected /opt/homebrew/bin/bash after brew bundle."
     [ -x /opt/homebrew/bin/starship ] || die "Expected /opt/homebrew/bin/starship after brew bundle."
+
+    ensure_cask_app "vscodium" "VSCodium.app"
+    ensure_cask_app "wezterm" "WezTerm.app"
 
     log "ok   verified Homebrew packages, casks, and fonts"
 }
@@ -169,6 +224,7 @@ backup_and_link() {
 
 find_codium_bin() {
     local candidate
+    local vscodium_app
 
     for candidate in \
         "${HOMEBREW_PREFIX:-}/bin/codium" \
@@ -185,6 +241,14 @@ find_codium_bin() {
     if command -v codium >/dev/null 2>&1; then
         command -v codium
         return 0
+    fi
+
+    if vscodium_app="$(app_bundle_path "VSCodium.app" 2>/dev/null)"; then
+        candidate="${vscodium_app}/Contents/Resources/app/bin/codium"
+        if [ -x "$candidate" ]; then
+            printf '%s\n' "$candidate"
+            return 0
+        fi
     fi
 
     return 1
