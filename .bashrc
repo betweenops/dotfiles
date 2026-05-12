@@ -87,7 +87,9 @@ case ";${PROMPT_COMMAND:-};" in
     *) PROMPT_COMMAND="__bash_history_sync${PROMPT_COMMAND:+; $PROMPT_COMMAND}" ;;
 esac
 
-eval "$(starship init bash)"
+if command -v starship >/dev/null 2>&1; then
+    eval "$(starship init bash)"
+fi
 
 if command -v atuin >/dev/null 2>&1 && [ -w "${HOME}/.config" ]; then
     eval "$(atuin init bash --disable-up-arrow)"

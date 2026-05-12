@@ -1,6 +1,6 @@
 # Dotfiles
 
-Personal macOS developer workstation setup focused on terminal productivity, reproducible environments, and portable tooling.
+Personal macOS arm64 developer workstation setup focused on terminal productivity, reproducible environments, and portable tooling.
 
 ## Included files
 
@@ -11,39 +11,35 @@ Personal macOS developer workstation setup focused on terminal productivity, rep
 - VSCodium settings/extensions
 - Bootstrap automation with symlink management and backups
 
-## Restore on a new Mac
-
-Copy the files back to these locations:
-
-- `.wezterm.lua` -> `~/.wezterm.lua`
-- `.bash_profile` -> `~/.bash_profile`
-- `.bashrc` -> `~/.bashrc`
-- `.config/starship.toml` -> `~/.config/starship.toml`
-- `vscodium/User/settings.json` -> `~/Library/Application Support/VSCodium/User/settings.json`
-
-Or use the bootstrap script from the repo root:
+## Bootstrap on a new Mac
 
 ```bash
 bash ~/dotfiles/bootstrap.sh
 ```
 
-The script backs up existing files into `~/.dotfiles-backups/<timestamp>/`, creates symlinks to the files in this repo, and reinstalls the VSCodium extensions listed in `vscodium/extensions.txt` when `codium` is available.
+The bootstrap script is the supported entrypoint for a clean macOS arm64 setup. It:
 
-Install the supporting tools that these configs expect:
+- installs Homebrew if it is missing
+- runs `brew bundle --file ~/dotfiles/Brewfile`
+- installs and verifies `WezTerm`, `VSCodium`, and `CaskaydiaCove Nerd Font`
+- verifies the `/opt/homebrew` paths this repo expects
+- backs up existing files into `~/.dotfiles-backups/<timestamp>/`
+- symlinks the tracked dotfiles into place
+- reinstalls the VSCodium extensions listed in `vscodium/extensions.txt`
 
-```bash
-brew bundle --file ~/dotfiles/Brewfile
-```
-
-Then install the font these configs expect:
-
-- `CaskaydiaCove Nerd Font`
-
-Reinstall VSCodium extensions:
+### Options
 
 ```bash
-while read -r ext; do
-  codium --install-extension "$ext"
-done < ~/dotfiles/vscodium/extensions.txt
+bash ~/dotfiles/bootstrap.sh --help
 ```
 
+Supported flags:
+
+- `--skip-homebrew-install` to require an existing Homebrew installation
+- `--skip-bundle` to skip package installation and only relink dotfiles
+- `--skip-extensions` to skip VSCodium extensions
+
+### Notes
+
+- This repo currently targets Apple Silicon Macs and assumes Homebrew lives at `/opt/homebrew`.
+- A completely fresh macOS machine may still prompt for Xcode Command Line Tools during Homebrew installation.
